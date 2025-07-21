@@ -1,0 +1,245 @@
+<style>
+  .contact-form-block {
+    max-width: 70%;
+    margin: 40px auto;
+    padding: 30px;
+    background-color: #fff;
+    border-radius: 12px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+    font-family: 'Segoe UI', sans-serif;
+  }
+
+  .contact-form-block h2 {
+    text-align: center;
+    font-size: 24px;
+    font-weight: 600;
+    margin-bottom: 25px;
+    color: #222;
+  }
+
+  .contact-form-block label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 500;
+    color: #333;
+  }
+
+  .contact-form-block input[type="text"],
+  .contact-form-block input[type="email"],
+  .contact-form-block input[type="tel"],
+  .contact-form-block textarea,
+  .contact-form-block select {
+    width: 100%;
+    padding: 12px 15px;
+    margin-bottom: 20px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    transition: border-color 0.3s ease;
+  }
+
+  .contact-form-block input:focus,
+  .contact-form-block textarea:focus,
+  .contact-form-block select:focus {
+    border-color: #6366f1;
+    outline: none;
+  }
+
+  .contact-form-block button {
+    display: block;
+    width: 100%;
+    padding: 14px;
+    background: linear-gradient(to right, #6D75E4 0%, #7053B4 100%);
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background 0.3s ease;
+  }
+
+  
+  .two-column {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+  }
+  label.easyform_success {
+    margin-top: 16px;
+    padding: 16px;
+    background-color: rgb(212, 237, 218);
+    border-radius: 8px;
+    text-align: center;
+    color: green;
+}
+.easyform_error, .easy_form_error_msg p{
+   
+    color: red;
+}
+.easy_form_error_msg
+{
+    background-color: rgb(239 106 97 / 47%);
+    margin-top: 16px;
+    padding: 16px;
+    border-radius: 8px;
+    text-align: center;
+}
+</style>
+
+<div class="easy_form_app_container">
+
+<div class="easy_from_app_wrapper">
+
+{% assign metaobject = shop.metaobjects.contact_form.values | last %}
+
+{% if metaobject %}
+ {% form 'contact', class:"contact-form-block" %} 
+    <h2>{{ block.settings.heading }}</h2>
+    
+    {% if metaobject.firstName == 'true' and metaobject.lastName == 'true' %}
+      <div class="two-column">
+    {% endif %}
+    {% if metaobject.firstName == 'true' %}
+      <div>
+        <label for="ContactForm-firstName">First Name</label>
+        <input type="text" id="ContactForm-firstName" name="contact[firstName]" required>
+      </div>
+    {% endif %}
+
+    {% if metaobject.lastName == 'true' %}
+      <div>
+        <label for="ContactForm-lastName">Last Name</label>
+        <input type="text" id="ContactForm-lastName" name="contact[lastName]" required>
+      </div>
+    {% endif %}
+      {% if metaobject.firstName == 'true' and metaobject.lastName == 'true' %}
+      </div>
+    {% endif %}
+
+    {% if metaobject.email == 'true' and metaobject.phone == 'true' %}
+        <div class="two-column">
+    {% endif %} 
+    {% if metaobject.email == 'true' %}
+      <div>
+        <label for="ContactForm-email">Email</label>
+        <input type="email" id="ContactForm-email" name="contact[email]" required>
+      </div>
+    {% endif %}
+
+   
+    {% if metaobject.phone == 'true' %}
+      <div>
+        <label for="ContactForm-phone">Phone</label>
+        <input type="tel" id="ContactForm-phone" name="contact[phone]" required>
+      </div>
+    {% endif %}
+     {% if metaobject.email == 'true' and metaobject.phone == 'true' %}
+        </div>
+    {% endif %} 
+
+    {% if metaobject.address == 'true' %}
+     <div>
+        <label for="ContactForm-address">Address</label>
+        <input type="text" id="ContactForm-address" name="contact[address]" required>
+      </div>
+    {% endif %}
+    {% if metaobject.city == 'true' and metaobject.state == 'true' %}
+      <div class="two-column">
+    {% endif %}
+      {% if metaobject.city == 'true' %}
+        <div>
+          <label for="ContactForm-city">City</label>
+          <input type="text" id="ContactForm-city" name="contact[city]" required>
+        </div>
+      {% endif %}
+
+      {% if metaobject.state == 'true' %}
+        <div>
+          <label for="ContactForm-state">State/Province</label>
+          <input type="text" id="ContactForm-state" name="contact[state]" required>
+        </div>
+      {% endif %}
+    {% if metaobject.city == 'true' and metaobject.state == 'true' %}
+      </div>
+    {% endif %}
+
+    {% if metaobject.zipCode == 'true' and metaobject.country == 'true' %}
+      <div class="two-column">
+    {% endif %}
+      {% if metaobject.country == 'true' %}
+        <div>
+          <label for="ContactForm-country">Country</label>
+          <input 
+            type="text" 
+            id="ContactForm-country" 
+            name="contact[country]" 
+            required
+          >
+        </div>
+      {% endif %}
+
+      {% if metaobject.zipCode == 'true' %}
+        <div>
+          <label for="ContactForm-zipCode">ZIP/Postal Code</label>
+          <input type="text" id="ContactForm-zipCode" name="contact[zipCode]" required>
+        </div>
+      {% endif %}
+    {% if metaobject.zipCode == 'true' and metaobject.country == 'true' %}
+      </div>
+    {% endif %}
+
+    {% if metaobject.subject == 'true' %}
+      <div>
+        <label for="ContactForm-subject">Subject</label>
+        <input type="text" id="ContactForm-subject" name="contact[Form Subject]" required>
+      </div>
+    {% endif %}
+
+    {% if metaobject.message == 'true' %}
+      <div>
+        <label for="ContactForm-message">Message</label>
+        <textarea id="ContactForm-message" name="contact[message]" rows="5" required></textarea>
+      </div>
+    {% endif %}
+
+    <button type="submit">Send</button>
+
+    {% if form.posted_successfully? %}
+        <label class="easyform_success">EasyForm data successfully!</label>
+    {% endif %}
+    {%- if form.errors -%}
+    <div class="easy_form_error_msg">
+        <label class="easyform_error">Form Submission issue</label>
+        {% for field in form.errors %}
+          <p>
+            {% if field == 'form' %}
+              {{ form.errors.messages[field] }}
+            {% else %}
+              <strong>{{ field | capitalize | replace: '_', ' ' }}</strong> - {{ form.errors.messages[field] }}
+            {% endif %}
+          </p>
+        {% endfor %}
+      </div>
+    {% endif %}
+  {% endform %}
+{% else %}
+  <div>No contact form metaobject assigned.</div>
+{% endif %}
+</div>
+</div>
+
+{% schema %}
+{
+  "name": "Easy Form",
+  "tag": "section",
+  "target": "section",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Get in Touch"
+    }
+  ]
+}
+{% endschema %}

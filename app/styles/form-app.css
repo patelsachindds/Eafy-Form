@@ -1,0 +1,34 @@
+.form_row
+{
+    margin-top: 32px;
+}
+.form_button_col {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 10px 0;
+    flex-wrap: wrap;
+}
+.form_button_col button {
+    flex: auto;
+    width: auto;
+    padding: 15px 15px;
+    box-shadow: 1px 2px 6px 0px #ccc !important;
+}
+.form_row h3 {
+    text-align: left;
+}
+.form_button_col button.Polaris-Button--variantPrimary {
+    background: linear-gradient(to right, #6D75E4 0%, #7053B4 100%);
+}
+.save_field_button button {
+    background: #057805 !important;
+    box-shadow: 1px 2px 6px 0px #ccc !important;
+    padding: 15px 30px;
+}
+.save_field_button {
+    text-align: center;
+}
+.contact_form_details p {
+    font-size: 18px;
+}
