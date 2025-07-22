@@ -3,7 +3,7 @@
 client_id = "d137260ff0f9eb2a82f4539487dfb9ec"
 name = "easyform"
 handle = "easyform-1"
-application_url = "https://referred-aud-delay-anne.trycloudflare.com"
+application_url = "https://races-restructuring-few-dictionaries.trycloudflare.com"
 embedded = true
 
 [build]
@@ -26,7 +26,7 @@ api_version = "2025-07"
 scopes = "write_products,read_products,read_metaobjects,write_metaobjects,write_metaobject_definitions,read_metaobject_definitions"
 
 [auth]
-redirect_urls = ["https://referred-aud-delay-anne.trycloudflare.com/auth/callback", "https://referred-aud-delay-anne.trycloudflare.com/auth/shopify/callback", "https://referred-aud-delay-anne.trycloudflare.com/api/auth/callback"]
+redirect_urls = ["https://races-restructuring-few-dictionaries.trycloudflare.com/auth/callback", "https://races-restructuring-few-dictionaries.trycloudflare.com/auth/shopify/callback", "https://races-restructuring-few-dictionaries.trycloudflare.com/api/auth/callback"]
 
 [pos]
 embedded = false
