@@ -48,7 +48,7 @@ export default function Screencast() {
                     <b>Scene 2: Creating a Form (0:10-0:40)</b>
                     <ul>
                       <li>"Select fields like name, email, and message with our simple toggle interface"</li>
-                      <li>Demonstrate field selection → form preview</li>
+                      <li>Demonstrate field selection</li>
                     </ul>
                   </li>
                   <li>
