@@ -5,11 +5,5 @@
   "framework": "remix",
   "env": {
     "NODE_ENV": "production"
-  },
-  "regions": ["iad1"],
-  "build": {
-    "env": {
-      "NODE_ENV": "production"
-    }
   }
 } 
