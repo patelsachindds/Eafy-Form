@@ -3,7 +3,7 @@
 client_id = "d137260ff0f9eb2a82f4539487dfb9ec"
 name = "easyform"
 handle = "easyform-1"
-application_url = "https://chile-possibility-portable-rivers.trycloudflare.com"
+application_url = "https://eafy-form.vercel.app/"
 embedded = true
 
 [build]
@@ -26,7 +26,7 @@ api_version = "2025-07"
 scopes = "write_products,read_products,read_metaobjects,write_metaobjects,write_metaobject_definitions,read_metaobject_definitions"
 
 [auth]
-redirect_urls = ["https://chile-possibility-portable-rivers.trycloudflare.com/auth/callback", "https://chile-possibility-portable-rivers.trycloudflare.com/auth/shopify/callback", "https://chile-possibility-portable-rivers.trycloudflare.com/api/auth/callback"]
+redirect_urls = ["https://eafy-form.vercel.app//auth/callback", "https://eafy-form.vercel.app//auth/shopify/callback", "https://eafy-form.vercel.app//api/auth/callback"]
 
 [pos]
 embedded = false
