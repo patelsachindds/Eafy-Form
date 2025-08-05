@@ -14,9 +14,9 @@ import {
   Icon,
 } from "@shopify/polaris";
 import { 
-  AppsMajor,
-  SettingsMajor,
-  AnalyticsMajor,
+  AppsIcon,
+  SettingsIcon,
+  ChartLineIcon,
 } from "@shopify/polaris-icons";
 import { TitleBar } from "@shopify/app-bridge-react";
 import { authenticate } from "../shopify.server";
@@ -384,7 +384,7 @@ export default function Index() {
                 <Grid.Cell columnSpan={{ xs: 6, sm: 6, md: 4, lg: 4, xl: 4 }}>
                   <Card>
                     <div style={{ padding: "20px", textAlign: "center" }}>
-                      <Icon source={AppsMajor} color="base" />
+                      <Icon source={AppsIcon} color="base" />
                       <Text variant="headingMd" as="h3" fontWeight="bold" style={{ marginTop: "12px" }}>
                         Form Builder
                       </Text>
@@ -406,7 +406,7 @@ export default function Index() {
                 <Grid.Cell columnSpan={{ xs: 6, sm: 6, md: 4, lg: 4, xl: 4 }}>
                   <Card>
                     <div style={{ padding: "20px", textAlign: "center" }}>
-                      <Icon source={SettingsMajor} color="base" />
+                      <Icon source={SettingsIcon} color="base" />
                       <Text variant="headingMd" as="h3" fontWeight="bold" style={{ marginTop: "12px" }}>
                         Widgets
                       </Text>
@@ -428,7 +428,7 @@ export default function Index() {
                 <Grid.Cell columnSpan={{ xs: 6, sm: 6, md: 4, lg: 4, xl: 4 }}>
                   <Card>
                     <div style={{ padding: "20px", textAlign: "center" }}>
-                      <Icon source={AnalyticsMajor} color="base" />
+                      <Icon source={ChartLineIcon} color="base" />
                       <Text variant="headingMd" as="h3" fontWeight="bold" style={{ marginTop: "12px" }}>
                         Settings
                       </Text>

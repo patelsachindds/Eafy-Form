@@ -17,11 +17,11 @@ import { TitleBar } from "@shopify/app-bridge-react";
 import { authenticate } from "../shopify.server";
 import { useLoaderData } from "@remix-run/react";
 import { 
-  AppsMajor,
-  SettingsMajor,
-  AnalyticsMajor,
-  CustomersMajor,
-  CircleTickMajor,
+  AppsIcon,
+  SettingsIcon,
+  ChartLineIcon,
+  PersonIcon,
+  CheckCircleIcon,
 } from "@shopify/polaris-icons";
 
 export const loader = async ({ request }) => {
@@ -86,7 +86,7 @@ export default function Dashboard() {
           <Grid.Cell columnSpan={{ xs: 6, sm: 3, md: 3, lg: 3, xl: 3 }}>
             <Card>
               <div style={{ padding: "20px", textAlign: "center" }}>
-                <Icon source={AppsMajor} color="base" />
+                <Icon source={AppsIcon} color="base" />
                 <Text variant="headingMd" as="h3" fontWeight="bold">
                   {formsCreated}
                 </Text>
@@ -100,7 +100,7 @@ export default function Dashboard() {
           <Grid.Cell columnSpan={{ xs: 6, sm: 3, md: 3, lg: 3, xl: 3 }}>
             <Card>
               <div style={{ padding: "20px", textAlign: "center" }}>
-                <Icon source={CustomersMajor} color="base" />
+                <Icon source={PersonIcon} color="base" />
                 <Text variant="headingMd" as="h3" fontWeight="bold">
                   {totalSubmissions}
                 </Text>
@@ -114,7 +114,7 @@ export default function Dashboard() {
           <Grid.Cell columnSpan={{ xs: 6, sm: 3, md: 3, lg: 3, xl: 3 }}>
             <Card>
               <div style={{ padding: "20px", textAlign: "center" }}>
-                <Icon source={AnalyticsMajor} color="base" />
+                <Icon source={ChartLineIcon} color="base" />
                 <Text variant="headingMd" as="h3" fontWeight="bold">
                   {appStatus === 'active' ? 'Active' : 'Inactive'}
                 </Text>
@@ -128,7 +128,7 @@ export default function Dashboard() {
           <Grid.Cell columnSpan={{ xs: 6, sm: 3, md: 3, lg: 3, xl: 3 }}>
             <Card>
               <div style={{ padding: "20px", textAlign: "center" }}>
-                <Icon source={SettingsMajor} color="base" />
+                <Icon source={SettingsIcon} color="base" />
                 <Text variant="headingMd" as="h3" fontWeight="bold">
                   Ready
                 </Text>
@@ -172,7 +172,7 @@ export default function Dashboard() {
         <Banner
           title="Setup Complete!"
           tone="success"
-          icon={CircleTickMajor}
+                      icon={CheckCircleIcon}
         >
           <p>Your EasyForm app is successfully installed and ready to use.</p>
         </Banner>
