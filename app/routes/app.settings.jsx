@@ -1,53 +1,20 @@
-import { useEffect, useState, useCallback } from "react";
-import { useFetcher } from "@remix-run/react";
+import { useState, useCallback } from "react";
+import { useFetcher, useLoaderData } from "@remix-run/react";
 import {
   Page,
   Layout,
   Card,
-  Button,
   Text,
-  Grid,
-  Badge,
-  List,
-  Icon,
   Banner,
   Tabs,
-  LegacyStack,
-  Thumbnail,
-  EmptyState,
-  Modal,
   FormLayout,
   Select,
   TextField,
-  ColorPicker,
   RangeSlider,
-  Checkbox,
-  ChoiceList,
-  ButtonGroup,
   SettingToggle,
-  TextStyle,
 } from "@shopify/polaris";
 import { TitleBar } from "@shopify/app-bridge-react";
 import { authenticate } from "../shopify.server";
-import { useLoaderData } from "@remix-run/react";
-import { 
-  CircleTickMajor, 
-  CircleAlertMajor, 
-  CircleInformationMajor,
-  ThemeEditMajor,
-  AppsMajor,
-  SettingsMajor,
-  AnalyticsMajor,
-  CustomersMajor,
-  PlusMajor,
-  EditMajor,
-  DeleteMajor,
-  ViewMajor,
-  NotificationMajor,
-  EmailMajor,
-  GlobeMajor,
-  SecurityMajor
-} from "@shopify/polaris-icons";
 
 export const loader = async ({ request }) => {
   await authenticate.admin(request);
