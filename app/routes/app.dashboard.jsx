@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import {
   Page,
   Layout,
@@ -6,27 +6,22 @@ import {
   Button,
   Text,
   Grid,
-  Badge,
   List,
-  Icon,
   Banner,
   Tabs,
-  LegacyStack,
-  Thumbnail,
   EmptyState,
+  Icon,
+  LegacyStack,
 } from "@shopify/polaris";
 import { TitleBar } from "@shopify/app-bridge-react";
 import { authenticate } from "../shopify.server";
 import { useLoaderData } from "@remix-run/react";
 import { 
-  CircleTickMajor, 
-  CircleAlertMajor, 
-  CircleInformationMajor,
-  ThemeEditMajor,
   AppsMajor,
   SettingsMajor,
   AnalyticsMajor,
-  CustomersMajor
+  CustomersMajor,
+  CircleTickMajor,
 } from "@shopify/polaris-icons";
 
 export const loader = async ({ request }) => {

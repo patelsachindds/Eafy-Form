@@ -1,5 +1,5 @@
-import { useEffect, useState, useCallback } from "react";
-import { useFetcher } from "@remix-run/react";
+import { useState, useCallback } from "react";
+import { useFetcher, useLoaderData } from "@remix-run/react";
 
 import {
   Page,
@@ -20,7 +20,6 @@ import {
 } from "@shopify/polaris-icons";
 import { TitleBar } from "@shopify/app-bridge-react";
 import { authenticate } from "../shopify.server";
-import { useLoaderData } from "@remix-run/react";
 
 export const loader = async ({ request }) => {
   await authenticate.admin(request);
