@@ -67,6 +67,40 @@ export default function Screencast() {
                     </ul>
                   </li>
                 </ul>
+                <Divider borderColor="border" />
+
+                <Text variant="headingLg" as="h2" fontWeight="semibold" style={{ marginTop: 24 }}>
+                  How to use APP in your store
+                </Text>
+                <div style={{ marginTop: 16, marginBottom: 24 }}>
+                  <Text variant="headingMd" as="h3" fontWeight="semibold" style={{ marginTop: 16, marginBottom: 8 }}>
+                    Step 1: Enter Theme Customization
+                  </Text>
+                  <Text variant="bodyMd" as="p" style={{ marginBottom: 8 }}>
+                    From your Shopify admin, go to Online Store → Themes. Click "Customize" on your active theme.
+                  </Text>
+
+                  <Text variant="headingMd" as="h3" fontWeight="semibold" style={{ marginTop: 16, marginBottom: 8 }}>
+                    Step 2: Add the easyform Section
+                  </Text>
+                  <Text variant="bodyMd" as="p" style={{ marginBottom: 8 }}>
+                    In the theme editor sidebar, click "Add section". Navigate to the "Apps" tab and select easyform.
+                  </Text>
+
+                  <Text variant="headingMd" as="h3" fontWeight="semibold" style={{ marginTop: 16, marginBottom: 8 }}>
+                    Step 3: Select Your Form
+                  </Text>
+                  <Text variant="bodyMd" as="p" style={{ marginBottom: 8 }}>
+                    Choose the form you created in the easyform dashboard. Adjust settings (e.g., layout, spacing) using the live preview.
+                  </Text>
+
+                  <Text variant="headingMd" as="h3" fontWeight="semibold" style={{ marginTop: 16, marginBottom: 8 }}>
+                    Step 4: Save & Publish
+                  </Text>
+                  <Text variant="bodyMd" as="p" style={{ marginBottom: 8 }}>
+                    Click "Save" to apply changes. Your form will now appear on the selected page!
+                  </Text>
+                </div>
               </Box>
             </Card>
           </Layout.Section>

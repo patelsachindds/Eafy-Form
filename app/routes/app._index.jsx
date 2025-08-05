@@ -10,7 +10,14 @@ import {
   FormLayout,
   Text,
   Grid,
+  LegacyStack,
+  Icon,
 } from "@shopify/polaris";
+import { 
+  AppsMajor,
+  SettingsMajor,
+  AnalyticsMajor,
+} from "@shopify/polaris-icons";
 import { TitleBar } from "@shopify/app-bridge-react";
 import { authenticate } from "../shopify.server";
 import { useLoaderData } from "@remix-run/react";
@@ -65,19 +72,13 @@ export const action = async ({ request }) => {
     `;
     const definitionResponse = await admin.graphql(definitionQuery);
     const definitionResult = await definitionResponse.json();
-    console.log("Metaobject definitions with fields:", definitionResult);
-
+  
     let contactFormDefinition = definitionResult.data.metaobjectDefinitions.nodes.find(
       def => def.type === "contact_form"
     );
 
-    console.log("Found contact form definition:", contactFormDefinition);
-
         // Check if we need to create the definition
     const needsDefinition = !contactFormDefinition;
-
-    console.log("Needs definition:", needsDefinition);
-    console.log("Existing definition field count:", contactFormDefinition?.fieldDefinitions?.length || 0);
 
     if (needsDefinition) {
       // Create the metaobject definition
@@ -122,13 +123,11 @@ export const action = async ({ request }) => {
         }
       };
 
-      console.log("Creating definition with:", definitionVars);
+     
       const createDefResponse = await admin.graphql(createDefinitionMutation, { variables: definitionVars });
       const createDefResult = await createDefResponse.json();
-      console.log("Create definition result:", createDefResult);
 
           if (createDefResult.data.metaobjectDefinitionCreate.userErrors.length > 0) {
-      console.log("Definition creation failed, trying alternative approach...");
       
       // Try creating a simpler definition with just basic fields
       const simpleDefinitionFields = [
@@ -153,10 +152,10 @@ export const action = async ({ request }) => {
         }
       };
 
-      console.log("Trying simple definition:", simpleDefinitionVars);
+  
       const simpleDefResponse = await admin.graphql(createDefinitionMutation, { variables: simpleDefinitionVars });
       const simpleDefResult = await simpleDefResponse.json();
-      console.log("Simple definition result:", simpleDefResult);
+
 
       if (simpleDefResult.data.metaobjectDefinitionCreate.userErrors.length > 0) {
         return { success: false, error: simpleDefResult.data.metaobjectDefinitionCreate.userErrors };
@@ -164,7 +163,6 @@ export const action = async ({ request }) => {
     }
 
       // Wait a moment for the definition to be fully created
-      console.log("Definition created successfully, waiting for propagation...");
       await new Promise(resolve => setTimeout(resolve, 2000));
 
       // Verify the definition was created
@@ -185,7 +183,7 @@ export const action = async ({ request }) => {
       `;
       const verifyResponse = await admin.graphql(verifyDefinitionQuery);
       const verifyResult = await verifyResponse.json();
-      console.log("Verification - metaobject definitions:", verifyResult);
+      
 
       const verifiedDefinition = verifyResult.data.metaobjectDefinitions.nodes.find(
         def => def.type === "contact_form"
@@ -195,8 +193,6 @@ export const action = async ({ request }) => {
         return { success: false, error: "Failed to create metaobject definition" };
       }
 
-      console.log("Definition verified successfully:", verifiedDefinition);
-      console.log("Available fields in definition:", verifiedDefinition.fieldDefinitions);
     }
 
     // 1. Query for existing metaobject
@@ -217,8 +213,6 @@ export const action = async ({ request }) => {
     const getResponse = await admin.graphql(getMetaobjectQuery);
     const getResult = await getResponse.json();
     
-    console.log("Get metaobject result:", getResult);
-    
     // 2. Check if metaobject exists
     const existing = getResult.data.metaobjects.nodes[0];
 
@@ -227,20 +221,16 @@ export const action = async ({ request }) => {
     
     if (contactFormDefinition && contactFormDefinition.fieldDefinitions) {
       availableFieldKeys = contactFormDefinition.fieldDefinitions.map(field => field.key);
-      console.log("Available field keys from definition:", availableFieldKeys);
-      console.log("Definition type:", contactFormDefinition.type);
-      console.log("Definition name:", contactFormDefinition.name);
-      console.log("Total fields in definition:", contactFormDefinition.fieldDefinitions.length);
+      
     } else {
       // Fallback to basic fields if no definition found
       availableFieldKeys = ["firstName", "lastName", "email"];
-      console.log("Using fallback field keys:", availableFieldKeys);
+     
     }
     
     // Filter selected fields to only include those that exist in the definition
     const validSelectedFields = selectedFields.filter(field => availableFieldKeys.includes(field));
-    console.log("Selected fields:", selectedFields);
-    console.log("Valid selected fields (that exist in definition):", validSelectedFields);
+    
     
     let fields;
     if (existing) {
@@ -255,16 +245,13 @@ export const action = async ({ request }) => {
         value: validSelectedFields.includes(field) ? "true" : "false",
       }));
       
-      console.log("Existing fields:", existingFields);
-      console.log("New field selections:", fields);
     } else {
       // If no existing metaobject, use available fields from definition
       fields = availableFieldKeys.map((field) => ({
         key: field,
         value: validSelectedFields.includes(field) ? "true" : "false",
       }));
-      
-      console.log("Creating new metaobject with available fields:", fields);
+     
     }
 
   if (existing) {
@@ -281,10 +268,9 @@ export const action = async ({ request }) => {
       }
     `;
     const updateVars = { id: existing.id, metaobject: { fields } };
-    console.log("Update variables:", updateVars);
     const updateResponse = await admin.graphql(updateMutation, { variables: updateVars });
     const updateResult = await updateResponse.json();
-    console.log("Update result:", updateResult);
+    
     if (updateResult.data.metaobjectUpdate.userErrors.length > 0) {
       return { success: false, error: updateResult.data.metaobjectUpdate.userErrors };
     }
@@ -303,10 +289,10 @@ export const action = async ({ request }) => {
       }
     `;
     const createVars = { metaobject: { type: "contact_form", fields } };
-    console.log("Create variables:", createVars);
+    
     const createResponse = await admin.graphql(createMutation, { variables: createVars });
     const createResult = await createResponse.json();
-    console.log("Create result:", createResult);
+    
     if (createResult.data.metaobjectCreate.userErrors.length > 0) {
       return { success: false, error: createResult.data.metaobjectCreate.userErrors };
     }
@@ -372,12 +358,107 @@ export default function Index() {
 
   return (
     <Page>
-      <TitleBar title="Contact Form Builder" />
+      <TitleBar title="EasyForm - Contact Form Builder" />
       <Layout>
+        {/* Navigation Section */}
+        <Layout.Section>
+          <Card>
+            <div style={{ padding: "24px" }}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "24px" }}>
+                <Text variant="headingLg" as="h2">
+                  EasyForm Dashboard
+                </Text>
+                <LegacyStack spacing="tight">
+                  <Button variant="primary" url="/app/dashboard">
+                    Dashboard
+                  </Button>
+                  <Button variant="secondary" url="/app/widgets">
+                    Form Widgets
+                  </Button>
+                  <Button variant="secondary" url="/app/settings">
+                    Settings
+                  </Button>
+                </LegacyStack>
+              </div>
+              
+              <Grid>
+                <Grid.Cell columnSpan={{ xs: 6, sm: 6, md: 4, lg: 4, xl: 4 }}>
+                  <Card>
+                    <div style={{ padding: "20px", textAlign: "center" }}>
+                      <Icon source={AppsMajor} color="base" />
+                      <Text variant="headingMd" as="h3" fontWeight="bold" style={{ marginTop: "12px" }}>
+                        Form Builder
+                      </Text>
+                      <Text variant="bodySm" as="p" color="subdued">
+                        Create custom contact forms
+                      </Text>
+                      <Button 
+                        variant="primary" 
+                        size="slim"
+                        style={{ marginTop: "12px" }}
+                        url="/app"
+                      >
+                        Build Form
+                      </Button>
+                    </div>
+                  </Card>
+                </Grid.Cell>
+                
+                <Grid.Cell columnSpan={{ xs: 6, sm: 6, md: 4, lg: 4, xl: 4 }}>
+                  <Card>
+                    <div style={{ padding: "20px", textAlign: "center" }}>
+                      <Icon source={SettingsMajor} color="base" />
+                      <Text variant="headingMd" as="h3" fontWeight="bold" style={{ marginTop: "12px" }}>
+                        Widgets
+                      </Text>
+                      <Text variant="bodySm" as="p" color="subdued">
+                        Manage form widgets
+                      </Text>
+                      <Button 
+                        variant="primary" 
+                        size="slim"
+                        style={{ marginTop: "12px" }}
+                        url="/app/widgets"
+                      >
+                        Manage Widgets
+                      </Button>
+                    </div>
+                  </Card>
+                </Grid.Cell>
+                
+                <Grid.Cell columnSpan={{ xs: 6, sm: 6, md: 4, lg: 4, xl: 4 }}>
+                  <Card>
+                    <div style={{ padding: "20px", textAlign: "center" }}>
+                      <Icon source={AnalyticsMajor} color="base" />
+                      <Text variant="headingMd" as="h3" fontWeight="bold" style={{ marginTop: "12px" }}>
+                        Settings
+                      </Text>
+                      <Text variant="bodySm" as="p" color="subdued">
+                        Configure app settings
+                      </Text>
+                      <Button 
+                        variant="primary" 
+                        size="slim"
+                        style={{ marginTop: "12px" }}
+                        url="/app/settings"
+                      >
+                        Configure
+                      </Button>
+                    </div>
+                  </Card>
+                </Grid.Cell>
+              </Grid>
+            </div>
+          </Card>
+        </Layout.Section>
+
         <Layout.Section>
           <Card>
             <div style={{ padding: "24px" }}>
               <div class="contact_form_details">
+                <Text variant="headingMd" as="h3" alignment="center">
+                  Contact Form Builder
+                </Text>
                 <Text variant="bodyMd" as="p" alignment="center" color="subdued">
                   Select which fields you want to include in your contact form
                 </Text>
