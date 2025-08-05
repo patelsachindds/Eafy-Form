@@ -56,7 +56,7 @@ export const loader = async ({ request }) => {
 
 export const action = async ({ request }) => {
   try {
-    const { admin } = await authenticate.admin(request);
+    await authenticate.admin(request);
     const formData = await request.formData();
     const action = formData.get("action");
     
@@ -81,7 +81,6 @@ export default function Settings() {
   const { settings } = useLoaderData();
   const fetcher = useFetcher();
   const [selectedTab, setSelectedTab] = useState(0);
-  const [activeModal, setActiveModal] = useState(null);
   const [notifications, setNotifications] = useState(settings.notifications);
   const [integrations, setIntegrations] = useState(settings.integrations);
   const [appearance, setAppearance] = useState(settings.appearance);

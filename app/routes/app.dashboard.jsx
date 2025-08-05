@@ -38,7 +38,7 @@ export const loader = async ({ request }) => {
 };
 
 export default function Dashboard() {
-  const { storeName, appStatus, formsCreated, totalSubmissions, lastSubmission } = useLoaderData();
+  const { appStatus, formsCreated, totalSubmissions } = useLoaderData();
   const [selectedTab, setSelectedTab] = useState(0);
 
   const tabs = [

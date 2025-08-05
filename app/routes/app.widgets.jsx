@@ -62,39 +62,39 @@ export const loader = async ({ request }) => {
 
 export const action = async ({ request }) => {
   try {
-    const { admin } = await authenticate.admin(request);
+    await authenticate.admin(request);
     const formData = await request.formData();
     const action = formData.get("action");
     
     if (action === "create") {
       // Handle widget creation
-      const name = formData.get("name");
-      const type = formData.get("type");
-      const style = formData.get("style");
-      const color = formData.get("color");
-      const borderRadius = formData.get("borderRadius");
+      // const name = formData.get("name");
+      // const type = formData.get("type");
+      // const style = formData.get("style");
+      // const color = formData.get("color");
+      // const borderRadius = formData.get("borderRadius");
       
-      // Here you would save to database
+      // Here you would save to metaobjects
       return { success: true, message: "Widget created successfully!" };
     }
     
     if (action === "update") {
       // Handle widget update
-      const id = formData.get("id");
-      const name = formData.get("name");
-      const style = formData.get("style");
-      const color = formData.get("color");
-      const borderRadius = formData.get("borderRadius");
+      // const id = formData.get("id");
+      // const name = formData.get("name");
+      // const style = formData.get("style");
+      // const color = formData.get("color");
+      // const borderRadius = formData.get("borderRadius");
       
-      // Here you would update in database
+      // Here you would update in metaobjects
       return { success: true, message: "Widget updated successfully!" };
     }
     
     if (action === "delete") {
       // Handle widget deletion
-      const id = formData.get("id");
+      // const id = formData.get("id");
       
-      // Here you would delete from database
+      // Here you would delete from metaobjects
       return { success: true, message: "Widget deleted successfully!" };
     }
     

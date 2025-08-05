@@ -233,12 +233,7 @@ export const action = async ({ request }) => {
     
     let fields;
     if (existing) {
-      // If metaobject exists, merge existing fields with new selections
-      const existingFields = existing.fields.reduce((acc, field) => {
-        acc[field.key] = field.value;
-        return acc;
-      }, {});
-      
+      // If metaobject exists, update fields with new selections
       fields = availableFieldKeys.map((field) => ({
         key: field,
         value: validSelectedFields.includes(field) ? "true" : "false",
