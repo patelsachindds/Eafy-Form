@@ -1,4 +1,5 @@
-import { useEffect, useState, useCallback } from "react";
+
+import { useEffect, useState, useCallback, useRef } from "react";
 import { useFetcher } from "@remix-run/react";
 
 import {
@@ -14,9 +15,9 @@ import {
   Icon,
 } from "@shopify/polaris";
 import { 
-  AppsMajor,
-  SettingsMajor,
-  AnalyticsMajor,
+   AppsIcon,
+  SettingsIcon,
+  ChartLineIcon,
 } from "@shopify/polaris-icons";
 import { TitleBar } from "@shopify/app-bridge-react";
 import { authenticate } from "../shopify.server";
@@ -307,6 +308,10 @@ export const action = async ({ request }) => {
 
 
 export default function Index() {
+  // Ref for the form builder section
+  const formBuilderRef = useRef(null);
+  // State to control showing the form builder widget
+  const [showFormBuilder, setShowFormBuilder] = useState(false);
   const fetcher = useFetcher();
   const { existingFields } = useLoaderData();
 
@@ -356,362 +361,367 @@ export default function Index() {
     );
   }, [fields, fetcher]);
 
+  // Show form and scroll to it
+  const handleShowFormBuilder = () => {
+    setShowFormBuilder(true);
+    setTimeout(() => {
+      if (formBuilderRef.current) {
+        formBuilderRef.current.scrollIntoView({ behavior: 'smooth' });
+      }
+    }, 100); // Wait for render
+  };
+
+  // Back button handler
+  const handleBack = () => {
+    setShowFormBuilder(false);
+    setTimeout(() => {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }, 100);
+  };
+
   return (
     <Page>
       <TitleBar title="EasyForm - Contact Form Builder" />
       <Layout>
-        {/* Navigation Section */}
-        <Layout.Section>
-          <Card>
-            <div style={{ padding: "24px" }}>
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "24px" }}>
-                <Text variant="headingLg" as="h2">
-                  EasyForm Dashboard
-                </Text>
-                <LegacyStack spacing="tight">
-                  <Button variant="primary" url="/app/dashboard">
-                    Dashboard
-                  </Button>
-                  <Button variant="secondary" url="/app/widgets">
-                    Form Widgets
-                  </Button>
-                  <Button variant="secondary" url="/app/settings">
-                    Settings
-                  </Button>
-                </LegacyStack>
-              </div>
-              
-              <Grid>
-                <Grid.Cell columnSpan={{ xs: 6, sm: 6, md: 4, lg: 4, xl: 4 }}>
-                  <Card>
-                    <div style={{ padding: "20px", textAlign: "center" }}>
-                      <Icon source={AppsMajor} color="base" />
-                      <Text variant="headingMd" as="h3" fontWeight="bold" style={{ marginTop: "12px" }}>
-                        Form Builder
-                      </Text>
-                      <Text variant="bodySm" as="p" color="subdued">
-                        Create custom contact forms
-                      </Text>
-                      <Button 
-                        variant="primary" 
-                        size="slim"
-                        style={{ marginTop: "12px" }}
-                        url="/app"
+        {/* Show instructions only if form builder is hidden */}
+        {!showFormBuilder && (
+          <Layout.Section>
+            <TitleBar title="EasyForm" />
+            <Layout>
+              <Layout.Section>
+                <Card>
+                  <div
+                    style={{
+                      padding: "48px 32px 40px 32px",
+                      borderRadius: 20,
+                      maxWidth: 640,
+                      margin: "0 auto"
+                    }}
+                  >
+                    <div style={{ textAlign: "center", marginBottom: 32 }}>
+                      <span
+                        style={{
+                          display: "inline-flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          background: "linear-gradient(135deg, #5c6ac4 0%, #aee9f7 100%)",
+                          borderRadius: "50%",
+                          width: 80,
+                          height: 80,
+                          boxShadow: "0 4px 16px rgba(44, 62, 80, 0.12)",
+                          marginBottom: 12
+                        }}
                       >
-                        Build Form
-                      </Button>
+                        <Icon source={AppsIcon} color="inverse" backdrop={false} style={{ width: 44, height: 44 }} />
+                      </span>
+                      <div style={{ fontWeight: 700, fontSize: 30, color: "#202223", marginTop: 10, letterSpacing: -1 }}>Welcome to EasyForm</div>
+                      <div style={{ fontWeight: 500, fontSize: 18, color: "#5c6ac4", marginTop: 30 }}>Quick Start Guide</div>
                     </div>
-                  </Card>
-                </Grid.Cell>
-                
-                <Grid.Cell columnSpan={{ xs: 6, sm: 6, md: 4, lg: 4, xl: 4 }}>
-                  <Card>
-                    <div style={{ padding: "20px", textAlign: "center" }}>
-                      <Icon source={SettingsMajor} color="base" />
-                      <Text variant="headingMd" as="h3" fontWeight="bold" style={{ marginTop: "12px" }}>
-                        Widgets
-                      </Text>
-                      <Text variant="bodySm" as="p" color="subdued">
-                        Manage form widgets
-                      </Text>
-                      <Button 
-                        variant="primary" 
-                        size="slim"
-                        style={{ marginTop: "12px" }}
-                        url="/app/widgets"
-                      >
-                        Manage Widgets
-                      </Button>
-                    </div>
-                  </Card>
-                </Grid.Cell>
-                
-                <Grid.Cell columnSpan={{ xs: 6, sm: 6, md: 4, lg: 4, xl: 4 }}>
-                  <Card>
-                    <div style={{ padding: "20px", textAlign: "center" }}>
-                      <Icon source={AnalyticsMajor} color="base" />
-                      <Text variant="headingMd" as="h3" fontWeight="bold" style={{ marginTop: "12px" }}>
-                        Settings
-                      </Text>
-                      <Text variant="bodySm" as="p" color="subdued">
-                        Configure app settings
-                      </Text>
-                      <Button 
-                        variant="primary" 
-                        size="slim"
-                        style={{ marginTop: "12px" }}
-                        url="/app/settings"
-                      >
-                        Configure
-                      </Button>
-                    </div>
-                  </Card>
-                </Grid.Cell>
-              </Grid>
-            </div>
-          </Card>
-        </Layout.Section>
+                    <ul
+                      style={{
+                        background: "#fff",
+                        borderRadius: 14,
+                        boxShadow: "0 2px 8px rgba(44, 62, 80, 0.06)",
+                        padding: "32px 36px 28px 36px",
+                        margin: "0 auto 12px auto",
+                        maxWidth: 500,
+                        color: "#31373d",
+                        fontSize: 17,
+                        lineHeight: 1.8,
+                        listStyle: "none"
+                      }}
+                    >
+                      <li style={{ display: 'flex', alignItems: 'flex-start', marginBottom: 18 }}>
+                        <span style={{ color: '#5c6ac4', marginRight: 14, marginTop: 2, fontSize: 20 }}>✔</span>
+                        <span>Select the fields you want to include in your contact form in the <b>Widget</b> section.</span>
+                      </li>
+                      <li style={{ display: 'flex', alignItems: 'flex-start', marginBottom: 18 }}>
+                        <span style={{ color: '#5c6ac4', marginRight: 14, marginTop: 2, fontSize: 20 }}>✔</span>
+                        <span>Click <b>Create Contact Form</b> to save your selection.</span>
+                      </li>
+                      <li style={{ display: 'flex', alignItems: 'flex-start', marginBottom: 18 }}>
+                        <span style={{ color: '#5c6ac4', marginRight: 14, marginTop: 2, fontSize: 20 }}>✔</span>
+                        <span>Go to your Shopify admin, open <b>Online Store &gt; Themes &gt; Customize</b>, and add the EasyForm block to your desired page/section.</span>
+                      </li>
+                      <li style={{ display: 'flex', alignItems: 'flex-start' }}>
+                        <span style={{ color: '#5c6ac4', marginRight: 14, marginTop: 2, fontSize: 20 }}>✔</span>
+                        <span>Publish your changes. Your contact form will now appear on your store with the selected fields.</span>
+                      </li>
+                    </ul>
+                    <button style={{ 
+                      background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+                      color: "#fff"
+                    }} 
+                      className="form_widget"
+                      variant="primary"
+                      onClick={handleShowFormBuilder}
+                    >Form Widget</button>
+                  </div>
+                </Card>
+              </Layout.Section>
+            </Layout>
+          </Layout.Section>
+        )}
 
-        <Layout.Section>
-          <Card>
-            <div style={{ padding: "24px" }}>
-              <div class="contact_form_details">
-                <Text variant="headingMd" as="h3" alignment="center">
-                  Contact Form Builder
-                </Text>
-                <Text variant="bodyMd" as="p" alignment="center" color="subdued">
-                  Select which fields you want to include in your contact form
-                </Text>
-              </div>
-              
-              <div class="form_row">
-                <Form onSubmit={handleSubmit}>
-                  <FormLayout>
-                    <div class="form_grid">
-                      <Grid>
-                        <Grid.Cell columnSpan={{ xs: 6, sm: 6, md: 6, lg: 6, xl: 6 }}>
-                          <Text variant="headingMd" as="h3" alignment="center">
-                            Personal Information
-                          </Text>
-                          <div class="form_button_col">
-                            <Button
-                              style={{
-                                background: fields.firstName 
-                                  ? "linear-gradient(135deg, #667eea 0%, #764ba2 100%)" 
-                                  : undefined,
-                                border: fields.firstName ? "none" : undefined,
-                                marginBottom: "12px"
-                              }}
-                              variant={fields.firstName ? "primary" : "secondary"}
-                              onClick={() => handleChange("firstName")(!fields.firstName)}
-                              fullWidth
-                              size="large"
-                            >
-                              First Name
-                            </Button>
-                            <Button
-                              style={{
-                                background: fields.lastName 
-                                  ? "linear-gradient(135deg, #667eea 0%, #764ba2 100%)" 
-                                  : undefined,
-                                border: fields.lastName ? "none" : undefined
-                              }}
-                              variant={fields.lastName ? "primary" : "secondary"}
-                              onClick={() => handleChange("lastName")(!fields.lastName)}
-                              fullWidth
-                              size="large"
-                            >
-                              Last Name
-                            </Button>
-                          </div>
-                        </Grid.Cell>
-                        <Grid.Cell columnSpan={{ xs: 6, sm: 6, md: 6, lg: 6, xl: 6 }}>
-                          <Text variant="headingMd" as="h3" alignment="center">
-                            Contact Information
-                          </Text>
-                          <div class="form_button_col">
-                            <Button
-                              style={{
-                                background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
-                                border: "none",
-                                marginBottom: "12px"
-                              }}
-                              variant="primary"
-                              fullWidth
-                              size="large"
-                              disabled
-                            >
-                              Email Address (Required)
-                            </Button>
-                            <Button
-                              style={{
-                                background: fields.phone 
-                                  ? "linear-gradient(135deg, #667eea 0%, #764ba2 100%)" 
-                                  : undefined,
-                                border: fields.phone ? "none" : undefined
-                              }}
-                              variant={fields.phone ? "primary" : "secondary"}
-                              onClick={() => handleChange("phone")(!fields.phone)}
-                              fullWidth
-                              size="large"
-                            >
-                              Phone Number
-                            </Button>
-                          </div>
-                        </Grid.Cell>
-                      </Grid>
-                    </div>
-
-                    <div style={{ marginBottom: "32px" }}>
-                      <Grid>
-                        <Grid.Cell columnSpan={{ xs: 6, sm: 6, md: 6, lg: 6, xl: 6 }}>
-                          <Text variant="headingMd" as="h3" alignment="center">
-                            Address Information
-                          </Text>
-                          <div class="form_button_col">
-                            <Button
-                              style={{
-                                background: fields.address 
-                                  ? "linear-gradient(135deg, #667eea 0%, #764ba2 100%)" 
-                                  : undefined,
-                                border: fields.address ? "none" : undefined,
-                                marginBottom: "12px"
-                              }}
-                              variant={fields.address ? "primary" : "secondary"}
-                              onClick={() => handleChange("address")(!fields.address)}
-                              fullWidth
-                              size="large"
-                            >
-                              Street Address
-                            </Button>
-                            
-                                <Button
-                                  style={{
-                                    background: fields.city 
-                                      ? "linear-gradient(135deg, #667eea 0%, #764ba2 100%)" 
-                                      : undefined,
-                                    border: fields.city ? "none" : undefined,
-                                    marginBottom: "12px"
-                                  }}
-                                  variant={fields.city ? "primary" : "secondary"}
-                                  onClick={() => handleChange("city")(!fields.city)}
-                                  fullWidth
-                                  size="large"
-                                >
-                                  City
-                                </Button>
-                             
-                                <Button
-                                  style={{
-                                    background: fields.state 
-                                      ? "linear-gradient(135deg, #667eea 0%, #764ba2 100%)" 
-                                      : undefined,
-                                    border: fields.state ? "none" : undefined,
-                                    marginBottom: "12px"
-                                  }}
-                                  variant={fields.state ? "primary" : "secondary"}
-                                  onClick={() => handleChange("state")(!fields.state)}
-                                  fullWidth
-                                  size="large"
-                                >
-                                  State/Province
-                                </Button>
-                              
-                            
-                                <Button
-                                  style={{
-                                    background: fields.country 
-                                      ? "linear-gradient(135deg, #667eea 0%, #764ba2 100%)" 
-                                      : undefined,
-                                    border: fields.country ? "none" : undefined,
-                                    marginBottom: "12px"
-                                  }}
-                                  variant={fields.country ? "primary" : "secondary"}
-                                  onClick={() => handleChange("country")(!fields.country)}
-                                  fullWidth
-                                  size="large"
-                                >
-                                  Country
-                                </Button>
-                             
-                                <Button
-                                  style={{
-                                    background: fields.zipCode 
-                                      ? "linear-gradient(135deg, #667eea 0%, #764ba2 100%)" 
-                                      : undefined,
-                                    border: fields.zipCode ? "none" : undefined
-                                  }}
-                                  variant={fields.zipCode ? "primary" : "secondary"}
-                                  onClick={() => handleChange("zipCode")(!fields.zipCode)}
-                                  fullWidth
-                                  size="large"
-                                >
-                                  Zip/Postal Code
-                                </Button>
-                              
-                          </div>
-                        </Grid.Cell>
-                        <Grid.Cell columnSpan={{ xs: 6, sm: 6, md: 6, lg: 6, xl: 6 }}>
-                          <Text variant="headingMd" as="h3" alignment="center">
-                            Message Details
-                          </Text>
-                          <div class="form_button_col">
-                            <Button
-                              style={{
-                                background: fields.subject 
-                                  ? "linear-gradient(135deg, #667eea 0%, #764ba2 100%)" 
-                                  : undefined,
-                                border: fields.subject ? "none" : undefined,
-                                marginBottom: "12px"
-                              }}
-                              variant={fields.subject ? "primary" : "secondary"}
-                              onClick={() => handleChange("subject")(!fields.subject)}
-                              fullWidth
-                              size="large"
-                            >
-                              Subject
-                            </Button>
-                            <Button
-                              style={{
-                                background: fields.message 
-                                  ? "linear-gradient(135deg, #667eea 0%, #764ba2 100%)" 
-                                  : undefined,
-                                border: fields.message ? "none" : undefined
-                              }}
-                              variant={fields.message ? "primary" : "secondary"}
-                              onClick={() => handleChange("message")(!fields.message)}
-                              fullWidth
-                              size="large"
-                            >
-                              Message
-                            </Button>
-                          </div>
-                        </Grid.Cell>
-                      </Grid>
-                    </div>
-
-
-                    {/* <div style={{ 
-                      marginTop: "32px", 
-                      padding: "24px", 
-                      backgroundColor: "#f6f6f7", 
-                      borderRadius: "8px",
-                      textAlign: "center"
-                    }}>
-                      <Text variant="bodyMd" as="p" color="subdued">
-                        Selected fields: {Object.keys(fields).filter(key => fields[key]).join(", ")}
-                      </Text>
-                    </div> */}
-
-                    <div class="save_field_button">
-                      <Button variant="primary" submit size="large" loading={fetcher.state === "submitting"}>
-                        {fetcher.state === "submitting" ? "Creating..." : "Create Contact Form"}
-                      </Button>
-                    </div>
-
-                    {fetcher.data && (
-                      <div style={{ 
-                        marginTop: "16px", 
-                        padding: "16px", 
-                        backgroundColor: fetcher.data.success ? "#d4edda" : "#f8d7da", 
+        {/* Show form builder only if showFormBuilder is true */}
+        {showFormBuilder && (
+          <Layout.Section ref={formBuilderRef}>
+            <Card>
+              <div style={{ padding: "24px" }}>
+                {/* Back Button */}
+                <div style={{ marginBottom: "16px" }}>
+                  <Button variant="secondary" onClick={handleBack}>
+                    ← Back
+                  </Button>
+                </div>
+                <div class="contact_form_details">
+                  <Text variant="headingMd" as="h3" alignment="center" className="heading_form_fields">
+                    Contact Form Builder
+                  </Text>
+                  <Text variant="bodyMd" as="p" alignment="center" color="subdued">
+                    Select which fields you want to include in your contact form
+                  </Text>
+                </div>
+                <div class="form_row">
+                  <Form onSubmit={handleSubmit}>
+                    <FormLayout>
+                      <div class="form_grid">
+                        <Grid>
+                          <Grid.Cell columnSpan={{ xs: 6, sm: 6, md: 6, lg: 6, xl: 6 }}>
+                            <Text variant="headingMd" as="h3" alignment="center">
+                              Personal Information
+                            </Text>
+                            <div class="form_button_col">
+                              <Button
+                                style={{
+                                  background: fields.firstName 
+                                    ? "linear-gradient(135deg, #667eea 0%, #764ba2 100%)" 
+                                    : undefined,
+                                  border: fields.firstName ? "none" : undefined,
+                                  marginBottom: "12px"
+                                }}
+                                variant={fields.firstName ? "primary" : "secondary"}
+                                onClick={() => handleChange("firstName")(!fields.firstName)}
+                                fullWidth
+                                size="large"
+                              >
+                                First Name
+                              </Button>
+                              <Button
+                                style={{
+                                  background: fields.lastName 
+                                    ? "linear-gradient(135deg, #667eea 0%, #764ba2 100%)" 
+                                    : undefined,
+                                  border: fields.lastName ? "none" : undefined
+                                }}
+                                variant={fields.lastName ? "primary" : "secondary"}
+                                onClick={() => handleChange("lastName")(!fields.lastName)}
+                                fullWidth
+                                size="large"
+                              >
+                                Last Name
+                              </Button>
+                            </div>
+                          </Grid.Cell>
+                          <Grid.Cell columnSpan={{ xs: 6, sm: 6, md: 6, lg: 6, xl: 6 }}>
+                            <Text variant="headingMd" as="h3" alignment="center">
+                              Contact Information
+                            </Text>
+                            <div class="form_button_col">
+                              <Button
+                                style={{
+                                  background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+                                  border: "none",
+                                  marginBottom: "12px"
+                                }}
+                                variant="primary"
+                                fullWidth
+                                size="large"
+                                disabled
+                              >
+                                Email Address (Required)
+                              </Button>
+                              <Button
+                                style={{
+                                  background: fields.phone 
+                                    ? "linear-gradient(135deg, #667eea 0%, #764ba2 100%)" 
+                                    : undefined,
+                                  border: fields.phone ? "none" : undefined
+                                }}
+                                variant={fields.phone ? "primary" : "secondary"}
+                                onClick={() => handleChange("phone")(!fields.phone)}
+                                fullWidth
+                                size="large"
+                              >
+                                Phone Number
+                              </Button>
+                            </div>
+                          </Grid.Cell>
+                        </Grid>
+                      </div>
+                      <div style={{ marginBottom: "32px" }}>
+                        <Grid>
+                          <Grid.Cell columnSpan={{ xs: 6, sm: 6, md: 6, lg: 6, xl: 6 }}>
+                            <Text variant="headingMd" as="h3" alignment="center">
+                              Address Information
+                            </Text>
+                            <div class="form_button_col">
+                              <Button
+                                style={{
+                                  background: fields.address 
+                                    ? "linear-gradient(135deg, #667eea 0%, #764ba2 100%)" 
+                                    : undefined,
+                                  border: fields.address ? "none" : undefined,
+                                  marginBottom: "12px"
+                                }}
+                                variant={fields.address ? "primary" : "secondary"}
+                                onClick={() => handleChange("address")(!fields.address)}
+                                fullWidth
+                                size="large"
+                              >
+                                Street Address
+                              </Button>
+                              <Button
+                                style={{
+                                  background: fields.city 
+                                    ? "linear-gradient(135deg, #667eea 0%, #764ba2 100%)" 
+                                    : undefined,
+                                  border: fields.city ? "none" : undefined,
+                                  marginBottom: "12px"
+                                }}
+                                variant={fields.city ? "primary" : "secondary"}
+                                onClick={() => handleChange("city")(!fields.city)}
+                                fullWidth
+                                size="large"
+                              >
+                                City
+                              </Button>
+                              <Button
+                                style={{
+                                  background: fields.state 
+                                    ? "linear-gradient(135deg, #667eea 0%, #764ba2 100%)" 
+                                    : undefined,
+                                  border: fields.state ? "none" : undefined,
+                                  marginBottom: "12px"
+                                }}
+                                variant={fields.state ? "primary" : "secondary"}
+                                onClick={() => handleChange("state")(!fields.state)}
+                                fullWidth
+                                size="large"
+                              >
+                                State/Province
+                              </Button>
+                              <Button
+                                style={{
+                                  background: fields.country 
+                                    ? "linear-gradient(135deg, #667eea 0%, #764ba2 100%)" 
+                                    : undefined,
+                                  border: fields.country ? "none" : undefined,
+                                  marginBottom: "12px"
+                                }}
+                                variant={fields.country ? "primary" : "secondary"}
+                                onClick={() => handleChange("country")(!fields.country)}
+                                fullWidth
+                                size="large"
+                              >
+                                Country
+                              </Button>
+                              <Button
+                                style={{
+                                  background: fields.zipCode 
+                                    ? "linear-gradient(135deg, #667eea 0%, #764ba2 100%)" 
+                                    : undefined,
+                                  border: fields.zipCode ? "none" : undefined
+                                }}
+                                variant={fields.zipCode ? "primary" : "secondary"}
+                                onClick={() => handleChange("zipCode")(!fields.zipCode)}
+                                fullWidth
+                                size="large"
+                              >
+                                Zip/Postal Code
+                              </Button>
+                            </div>
+                          </Grid.Cell>
+                          <Grid.Cell columnSpan={{ xs: 6, sm: 6, md: 6, lg: 6, xl: 6 }}>
+                            <Text variant="headingMd" as="h3" alignment="center">
+                              Message Details
+                            </Text>
+                            <div class="form_button_col">
+                              <Button
+                                style={{
+                                  background: fields.subject 
+                                    ? "linear-gradient(135deg, #667eea 0%, #764ba2 100%)" 
+                                    : undefined,
+                                  border: fields.subject ? "none" : undefined,
+                                  marginBottom: "12px"
+                                }}
+                                variant={fields.subject ? "primary" : "secondary"}
+                                onClick={() => handleChange("subject")(!fields.subject)}
+                                fullWidth
+                                size="large"
+                              >
+                                Subject
+                              </Button>
+                              <Button
+                                style={{
+                                  background: fields.message 
+                                    ? "linear-gradient(135deg, #667eea 0%, #764ba2 100%)" 
+                                    : undefined,
+                                  border: fields.message ? "none" : undefined
+                                }}
+                                variant={fields.message ? "primary" : "secondary"}
+                                onClick={() => handleChange("message")(!fields.message)}
+                                fullWidth
+                                size="large"
+                              >
+                                Message
+                              </Button>
+                            </div>
+                          </Grid.Cell>
+                        </Grid>
+                      </div>
+                      {/* <div style={{ 
+                        marginTop: "32px", 
+                        padding: "24px", 
+                        backgroundColor: "#f6f6f7", 
                         borderRadius: "8px",
                         textAlign: "center"
                       }}>
-                        <Text variant="bodyMd" color={fetcher.data.success ? "success" : "critical"}>
-                          {fetcher.data.success 
-                            ? "✅ Contact form created/updated successfully!" 
-                            : `❌ Error: ${JSON.stringify(fetcher.data.error)}`
-                          }
+                        <Text variant="bodyMd" as="p" color="subdued">
+                          Selected fields: {Object.keys(fields).filter(key => fields[key]).join(", ")}
                         </Text>
+                      </div> */}
+                      <Text className="information_note"><b>Note:</b> Each time a customer fills out and submits the EasyForm, their details are instantly delivered to the store owner's email inbox for safe keeping and quick follow-up.</Text>
+                      <div class="save_field_button">
+                        <Button variant="primary" submit size="large" loading={fetcher.state === "submitting"}>
+                          {fetcher.state === "submitting" ? "Creating..." : "Create Contact Form"}
+                        </Button>
                       </div>
-                    )}
-                  </FormLayout>
-                </Form>
+                      {fetcher.data && (
+                        <div style={{ 
+                          marginTop: "16px", 
+                          padding: "16px", 
+                          backgroundColor: fetcher.data.success ? "#d4edda" : "#f8d7da", 
+                          borderRadius: "8px",
+                          textAlign: "center"
+                        }}>
+                          <Text variant="bodyMd" color={fetcher.data.success ? "success" : "critical"}>
+                            {fetcher.data.success 
+                              ? "✅ Contact form created/updated successfully!" 
+                              : `❌ Error: ${JSON.stringify(fetcher.data.error)}`
+                            }
+                          </Text>
+                        </div>
+                      )}
+                    </FormLayout>
+                  </Form>
+                </div>
               </div>
-            </div>
-          </Card>
-        </Layout.Section>
+            </Card>
+          </Layout.Section>
+        )}
       </Layout>
     </Page>
   );
 }
+

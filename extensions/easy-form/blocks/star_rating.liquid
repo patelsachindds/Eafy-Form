@@ -205,8 +205,7 @@
     <button type="submit">Send</button>
 
     {% if form.posted_successfully? %}
-        <label class="easyform_success">EasyForm data successfully!</label>
-    {% endif %}
+        <label class="easyform_success">Thank you for your EasyForm submission! <br> Please check your email — you should have received the details. I will be in touch with you shortly!" </label>  {% endif %}
     {%- if form.errors -%}
     <div class="easy_form_error_msg">
         <label class="easyform_error">Form Submission issue</label>

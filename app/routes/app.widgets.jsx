@@ -1,5 +1,5 @@
-import { useEffect, useState, useCallback } from "react";
-import { useFetcher } from "@remix-run/react";
+import { useState, useCallback } from "react";
+import { useFetcher, useLoaderData } from "@remix-run/react";
 import {
   Page,
   Layout,
@@ -7,41 +7,26 @@ import {
   Button,
   Text,
   Grid,
-  Badge,
-  List,
-  Icon,
   Banner,
   Tabs,
-  LegacyStack,
-  Thumbnail,
-  EmptyState,
   Modal,
   FormLayout,
   Select,
   TextField,
-  ColorPicker,
   RangeSlider,
-  Checkbox,
+  EmptyState,
+  Badge,
+  LegacyStack,
   ChoiceList,
-  ButtonGroup,
 } from "@shopify/polaris";
+import { 
+  PlusIcon,
+  ViewIcon,
+  EditIcon,
+  DeleteIcon,
+} from "@shopify/polaris-icons";
 import { TitleBar } from "@shopify/app-bridge-react";
 import { authenticate } from "../shopify.server";
-import { useLoaderData } from "@remix-run/react";
-import { 
-  CircleTickMajor, 
-  CircleAlertMajor, 
-  CircleInformationMajor,
-  ThemeEditMajor,
-  AppsMajor,
-  SettingsMajor,
-  AnalyticsMajor,
-  CustomersMajor,
-  PlusMajor,
-  EditMajor,
-  DeleteMajor,
-  ViewMajor
-} from "@shopify/polaris-icons";
 
 export const loader = async ({ request }) => {
   await authenticate.admin(request);
@@ -227,7 +212,7 @@ export default function Widgets() {
               </Text>
               <Button 
                 variant="primary" 
-                icon={PlusMajor}
+                icon={PlusIcon}
                 onClick={handleCreateWidget}
               >
                 Create Widget
@@ -288,7 +273,7 @@ export default function Widgets() {
                         <LegacyStack spacing="tight">
                           <Button 
                             size="slim" 
-                            icon={ViewMajor}
+                            icon={ViewIcon}
                             variant="secondary"
                             url={`/app/widgets/${widget.id}`}
                           >
@@ -296,7 +281,7 @@ export default function Widgets() {
                           </Button>
                           <Button 
                             size="slim" 
-                            icon={EditMajor}
+                            icon={EditIcon}
                             variant="secondary"
                             onClick={() => handleEditWidget(widget)}
                           >
@@ -304,7 +289,7 @@ export default function Widgets() {
                           </Button>
                           <Button 
                             size="slim" 
-                            icon={DeleteMajor}
+                            icon={DeleteIcon}
                             variant="secondary"
                             tone="critical"
                             onClick={() => handleDeleteWidget(widget.id)}

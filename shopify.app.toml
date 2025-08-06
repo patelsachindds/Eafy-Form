@@ -3,7 +3,7 @@
 client_id = "d137260ff0f9eb2a82f4539487dfb9ec"
 name = "easyform"
 handle = "easyform-1"
-application_url = "https://hit-resort-jane-wright.trycloudflare.com"
+application_url = "https://ho-mp-bulk-greene.trycloudflare.com"
 embedded = true
 
 [build]
@@ -23,10 +23,10 @@ api_version = "2025-07"
 
 [access_scopes]
 # Learn more at https://shopify.dev/docs/apps/tools/cli/configuration#access_scopes
-scopes = "write_products,read_products,read_metaobjects,write_metaobjects,write_metaobject_definitions,read_metaobject_definitions"
+scopes = "write_products,read_products,read_metaobjects:write,write_metaobjects,write_metaobject_definitions,read_metaobject_definitions"
 
 [auth]
-redirect_urls = ["https://hit-resort-jane-wright.trycloudflare.com/auth/callback", "https://hit-resort-jane-wright.trycloudflare.com/auth/shopify/callback", "https://hit-resort-jane-wright.trycloudflare.com/api/auth/callback"]
+redirect_urls = ["https://ho-mp-bulk-greene.trycloudflare.com/auth/callback", "https://ho-mp-bulk-greene.trycloudflare.com/auth/shopify/callback", "https://ho-mp-bulk-greene.trycloudflare.com/api/auth/callback"]
 
 [pos]
 embedded = false
