@@ -1,6 +1,6 @@
 
 import { useEffect, useState, useCallback, useRef } from "react";
-import { useFetcher } from "@remix-run/react";
+import { useLoaderData, useFetcher } from "@remix-run/react";
 
 import {
   Page,
@@ -19,9 +19,10 @@ import {
   SettingsIcon,
   ChartLineIcon,
 } from "@shopify/polaris-icons";
+
 import { TitleBar } from "@shopify/app-bridge-react";
 import { authenticate } from "../shopify.server";
-import { useLoaderData } from "@remix-run/react";
+
 
 export const loader = async ({ request }) => {
   await authenticate.admin(request);
@@ -44,8 +45,28 @@ export const loader = async ({ request }) => {
   const getResponse = await admin.graphql(getMetaobjectQuery);
   const getResult = await getResponse.json();
 
+
+  // Fetch access token from /auth endpoint (for demo only)
+  let accessToken = null;
+  let urlString = null;
+  let shop = null;
+  let code = null;
+  try {
+    const url = new URL(request.url);
+    urlString = url.toString();
+    shop = url.searchParams.get("shop");
+    code = url.searchParams.get("code");
+    if (shop && code) {
+      const authRes = await fetch(`${url.origin}/auth?shop=${shop}&code=${code}`);
+      const authData = await authRes.json();
+      accessToken = authData.accessToken;
+    }
+  } catch (e) {
+    accessToken = null;
+  }
+
   const existing = getResult.data.metaobjects.nodes[0];
-  return { existingFields: existing ? existing.fields : [] };
+  return { existingFields: existing ? existing.fields : [], accessToken, urlString, shop, code };
 };
 
 export const action = async ({ request }) => {
@@ -313,7 +334,7 @@ export default function Index() {
   // State to control showing the form builder widget
   const [showFormBuilder, setShowFormBuilder] = useState(false);
   const fetcher = useFetcher();
-  const { existingFields } = useLoaderData();
+  const { existingFields, accessToken, urlString, shop, code } = useLoaderData();
 
   const [fields, setFields] = useState(() => {
     const defaultFields = {
@@ -381,6 +402,13 @@ export default function Index() {
 
   return (
     <Page>
+      {/* Display access token and debug info for demonstration */}
+      <div style={{ background: '#f6f6f7', padding: 16, borderRadius: 8, margin: 16 }}>
+        <div><strong>URL:</strong> <span style={{ wordBreak: 'break-all' }}>{urlString || 'N/A'}</span></div>
+        <div><strong>Shop:</strong> <span style={{ wordBreak: 'break-all' }}>{shop || 'N/A'}</span></div>
+        <div><strong>Code:</strong> <span style={{ wordBreak: 'break-all' }}>{code || 'N/A'}</span></div>
+        <div><strong>Access Token:</strong> <span style={{ wordBreak: 'break-all' }}>{accessToken || 'N/A'}</span></div>
+      </div>
       <TitleBar title="EasyForm - Contact Form Builder" />
       <Layout>
         {/* Show instructions only if form builder is hidden */}
