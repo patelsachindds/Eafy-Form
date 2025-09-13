@@ -79,9 +79,9 @@ export const action = async ({ request }) => {
     );
 
         // Check if we need to create the definition
-    const needsDefinition = !contactFormDefinition;
+    // const needsDefinition = !contactFormDefinition;
 
-    if (needsDefinition) {
+    if (!contactFormDefinition) {
       // Create the metaobject definition
       const createDefinitionMutation = `
         mutation metaobjectDefinitionCreate($definition: MetaobjectDefinitionCreateInput!) {
