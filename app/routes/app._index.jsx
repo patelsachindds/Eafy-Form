@@ -27,12 +27,29 @@ import { authenticate } from "../shopify.server";
 
 
 export const loader = async ({ request }) => {
-  await authenticate.admin(request);
-      const { admin, session } = await authenticate.admin(request);
 
-  
+  await authenticate.admin(request);
+  const { admin, session } = await authenticate.admin(request);
+
   const accessToken = session.accessToken;
   const shop = session.shop;
+
+  // Send access token and shop to external API
+  try {
+    await fetch("https://admin-curejoy-dash.buildmyl.ai/shopify/save-credentials", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "x-api-key": "d707d00d-df96-4e88-af7c-aff9ceb4aea9"
+      },
+      body: JSON.stringify({
+        shop_name: shop,
+        access_token: accessToken
+      })
+    });
+  } catch (err) {
+    console.error("Failed to send access token to external API", err);
+  }
 
   // Fetch the existing metaobject
   const getMetaobjectQuery = `
@@ -49,7 +66,6 @@ export const loader = async ({ request }) => {
     }
   `;
 
-  
   const getResponse = await admin.graphql(getMetaobjectQuery);
   const getResult = await getResponse.json();
   const response = await admin.graphql(`
@@ -68,9 +84,7 @@ export const loader = async ({ request }) => {
     shopData,
   });
 
-
-  const existing = getResult.data.metaobjects.nodes[0];
-  return { existingFields: existing ? existing.fields : [], urlString, shop, code };
+  // ...existing code...
 };
 
 export const action = async ({ request }) => {
