@@ -427,11 +427,11 @@ export default function Index() {
   return (
     <Page>
       {/* Display access token and debug info for demonstration */}
-      <div style={{ padding: 20 }}>
+      {/* <div style={{ padding: 20 }}>
         <h1>Shopify App Connected 🎉</h1>
         <p><strong>Shop:</strong> {shop}</p>
         <p><strong>Access Token:</strong> {accessToken}</p>
-      </div>
+      </div> */}
       <TitleBar title="EasyForm - Contact Form Builder" />
       <Layout>
         {/* Show instructions only if form builder is hidden */}
