@@ -25,7 +25,7 @@ api_version = "2025-07"
 scopes = "write_products,read_products,read_metaobjects,write_metaobjects,write_metaobject_definitions,read_metaobject_definitions"
 
 [auth]
-redirect_urls = ["hhttps://eafy-form.vercel.app/auth/callback", "https://eafy-form.vercel.app/auth/shopify/callback", "https://eafy-form.vercel.app/api/auth/callback"]
+redirect_urls = ["https://eafy-form.vercel.app/auth/callback", "https://eafy-form.vercel.app/auth/shopify/callback", "https://eafy-form.vercel.app/api/auth/callback"]
 
 [pos]
 embedded = false

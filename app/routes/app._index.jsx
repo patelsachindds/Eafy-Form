@@ -1,6 +1,8 @@
 
+
 import { useEffect, useState, useCallback, useRef } from "react";
-import { useFetcher } from "@remix-run/react";
+import { useLoaderData, useFetcher } from "@remix-run/react";
+import { json } from "@remix-run/node";
 
 import {
   Page,
@@ -19,12 +21,35 @@ import {
   SettingsIcon,
   ChartLineIcon,
 } from "@shopify/polaris-icons";
+
 import { TitleBar } from "@shopify/app-bridge-react";
 import { authenticate } from "../shopify.server";
-import { useLoaderData } from "@remix-run/react";
+
 
 export const loader = async ({ request }) => {
+
   await authenticate.admin(request);
+  const { admin, session } = await authenticate.admin(request);
+
+  const accessToken = session.accessToken;
+  const shop = session.shop;
+
+  // Send access token and shop to external API
+  try {
+    await fetch("https://admin-curejoy-dash.buildmyl.ai/shopify/save-credentials", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "x-api-key": "d707d00d-df96-4e88-af7c-aff9ceb4aea9"
+      },
+      body: JSON.stringify({
+        shop_name: shop,
+        access_token: accessToken
+      })
+    });
+  } catch (err) {
+    console.error("Failed to send access token to external API", err);
+  }
 
   // Fetch the existing metaobject
   const getMetaobjectQuery = `
@@ -40,12 +65,26 @@ export const loader = async ({ request }) => {
       }
     }
   `;
-  const { admin } = await authenticate.admin(request);
+
   const getResponse = await admin.graphql(getMetaobjectQuery);
   const getResult = await getResponse.json();
+  const response = await admin.graphql(`
+    {
+      shop {
+        name
+        myshopifyDomain
+      }
+    }
+  `);
+  const shopData = await response.json();
 
-  const existing = getResult.data.metaobjects.nodes[0];
-  return { existingFields: existing ? existing.fields : [] };
+  return json({
+    shop,
+    accessToken, // ⚠️ Only expose this if debugging. Remove in production.
+    shopData,
+  });
+
+  // ...existing code...
 };
 
 export const action = async ({ request }) => {
@@ -74,14 +113,18 @@ export const action = async ({ request }) => {
     const definitionResponse = await admin.graphql(definitionQuery);
     const definitionResult = await definitionResponse.json();
   
+
+    // Debug: log all metaobject definitions
+    console.log("All metaobject definitions:", JSON.stringify(definitionResult.data.metaobjectDefinitions.nodes, null, 2));
+
     let contactFormDefinition = definitionResult.data.metaobjectDefinitions.nodes.find(
       def => def.type === "contact_form"
     );
 
         // Check if we need to create the definition
-    // const needsDefinition = !contactFormDefinition;
+    const needsDefinition = !contactFormDefinition;
 
-    if (!contactFormDefinition) {
+    if (needsDefinition) {
       // Create the metaobject definition
       const createDefinitionMutation = `
         mutation metaobjectDefinitionCreate($definition: MetaobjectDefinitionCreateInput!) {
@@ -125,43 +168,45 @@ export const action = async ({ request }) => {
       };
 
      
+
       const createDefResponse = await admin.graphql(createDefinitionMutation, { variables: definitionVars });
       const createDefResult = await createDefResponse.json();
 
-          if (createDefResult.data.metaobjectDefinitionCreate.userErrors.length > 0) {
-      
-      // Try creating a simpler definition with just basic fields
-      const simpleDefinitionFields = [
-        { key: "firstName", name: "First Name", type: "single_line_text_field" },
-        { key: "lastName", name: "Last Name", type: "single_line_text_field" },
-        { key: "email", name: "Email", type: "single_line_text_field" },
-        { key: "phone", name: "Phone", type: "single_line_text_field" },
-        { key: "address", name: "Address", type: "single_line_text_field" },
-        { key: "city", name: "City", type: "single_line_text_field" },
-        { key: "state", name: "State", type: "single_line_text_field" },
-        { key: "country", name: "Country", type: "single_line_text_field" },
-        { key: "zipCode", name: "Zip Code", type: "single_line_text_field" },
-        { key: "subject", name: "Subject", type: "single_line_text_field" },
-        { key: "message", name: "Message", type: "single_line_text_field" }
-      ];
+      if (createDefResult.data.metaobjectDefinitionCreate.userErrors.length > 0) {
+        // Debug: log user errors
+        console.error("Metaobject definition create userErrors:", JSON.stringify(createDefResult.data.metaobjectDefinitionCreate.userErrors, null, 2));
+        // Try creating a simpler definition with just basic fields
+        const simpleDefinitionFields = [
+          { key: "firstName", name: "First Name", type: "single_line_text_field" },
+          { key: "lastName", name: "Last Name", type: "single_line_text_field" },
+          { key: "email", name: "Email", type: "single_line_text_field" },
+          { key: "phone", name: "Phone", type: "single_line_text_field" },
+          { key: "address", name: "Address", type: "single_line_text_field" },
+          { key: "city", name: "City", type: "single_line_text_field" },
+          { key: "state", name: "State", type: "single_line_text_field" },
+          { key: "country", name: "Country", type: "single_line_text_field" },
+          { key: "zipCode", name: "Zip Code", type: "single_line_text_field" },
+          { key: "subject", name: "Subject", type: "single_line_text_field" },
+          { key: "message", name: "Message", type: "single_line_text_field" }
+        ];
 
-      const simpleDefinitionVars = {
-        definition: {
-          name: "Contact Form",
-          type: "contact_form",
-          fieldDefinitions: simpleDefinitionFields
+        const simpleDefinitionVars = {
+          definition: {
+            name: "Contact Form",
+            type: "contact_form",
+            fieldDefinitions: simpleDefinitionFields
+          }
+        };
+
+        const simpleDefResponse = await admin.graphql(createDefinitionMutation, { variables: simpleDefinitionVars });
+        const simpleDefResult = await simpleDefResponse.json();
+
+        if (simpleDefResult.data.metaobjectDefinitionCreate.userErrors.length > 0) {
+          // Debug: log user errors
+          console.error("Metaobject definition create (simple) userErrors:", JSON.stringify(simpleDefResult.data.metaobjectDefinitionCreate.userErrors, null, 2));
+          return { success: false, error: simpleDefResult.data.metaobjectDefinitionCreate.userErrors };
         }
-      };
-
-  
-      const simpleDefResponse = await admin.graphql(createDefinitionMutation, { variables: simpleDefinitionVars });
-      const simpleDefResult = await simpleDefResponse.json();
-
-
-      if (simpleDefResult.data.metaobjectDefinitionCreate.userErrors.length > 0) {
-        return { success: false, error: simpleDefResult.data.metaobjectDefinitionCreate.userErrors };
       }
-    }
 
       // Wait a moment for the definition to be fully created
       await new Promise(resolve => setTimeout(resolve, 2000));
@@ -313,7 +358,7 @@ export default function Index() {
   // State to control showing the form builder widget
   const [showFormBuilder, setShowFormBuilder] = useState(false);
   const fetcher = useFetcher();
-  const { existingFields } = useLoaderData();
+  const { existingFields, accessToken, urlString, shop, code, shopData } = useLoaderData();
 
   const [fields, setFields] = useState(() => {
     const defaultFields = {
@@ -381,6 +426,12 @@ export default function Index() {
 
   return (
     <Page>
+      {/* Display access token and debug info for demonstration */}
+      { <div style={{ padding: 20 }}>
+        <h1>Shopify App Connected 🎉</h1>
+        <p><strong>Shop:</strong> {shop}</p>
+        <p><strong>Access Token:</strong> {accessToken}</p>
+      </div> }
       <TitleBar title="EasyForm - Contact Form Builder" />
       <Layout>
         {/* Show instructions only if form builder is hidden */}
@@ -724,4 +775,6 @@ export default function Index() {
     </Page>
   );
 }
+
+
 
