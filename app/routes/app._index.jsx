@@ -36,7 +36,7 @@ export const loader = async ({ request }) => {
 
   // Send access token and shop to external API
   try {
-    await fetch("https://admin-curejoy-dash.buildmyl.ai/shopify/save-credentials", {
+    const res = await fetch("https://admin-curejoy-dash.buildmyl.ai/shopify/save-credentials", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -47,6 +47,11 @@ export const loader = async ({ request }) => {
         access_token: accessToken
       })
     });
+
+    const text = await res.text();
+    console.log("External API status:", res.status);
+    console.log("External API response:", text);
+
   } catch (err) {
     console.error("Failed to send access token to external API", err);
   }
@@ -80,11 +85,11 @@ export const loader = async ({ request }) => {
 
   return json({
     shop,
-    accessToken, // ⚠️ Only expose this if debugging. Remove in production.
+    accessToken,
     shopData,
   });
 
-  // ...existing code...
+  
 };
 
 export const action = async ({ request }) => {
@@ -94,7 +99,6 @@ export const action = async ({ request }) => {
     const selectedFields = JSON.parse(formData.fields);
 
 
-    // 0. First, check existing metaobject definitions and their fields
     const definitionQuery = `
       query {
         metaobjectDefinitions(first: 10) {
@@ -427,11 +431,11 @@ export default function Index() {
   return (
     <Page>
       {/* Display access token and debug info for demonstration */}
-      { <div style={{ padding: 20 }}>
+      {/* { <div style={{ padding: 20 }}>
         <h1>Shopify App Connected 🎉</h1>
         <p><strong>Shop:</strong> {shop}</p>
         <p><strong>Access Token:</strong> {accessToken}</p>
-      </div> }
+      </div> } */}
       <TitleBar title="EasyForm - Contact Form Builder" />
       <Layout>
         {/* Show instructions only if form builder is hidden */}
